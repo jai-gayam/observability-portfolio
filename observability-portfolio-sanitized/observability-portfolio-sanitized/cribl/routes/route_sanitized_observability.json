@@ -1,0 +1,24 @@
+{
+  "id": "route_sanitized_observability",
+  "name": "Sanitized Observability Route",
+  "description": "Route logs/metrics/traces to destinations based on sourcetype-like hints and env. Replace placeholders.",
+  "filter": "true",
+  "clones": [
+    {
+      "filter": "source == 'cloudwatch' OR sourcetype == 'aws:cloudwatch'",
+      "pipeline": "pipe_cloudwatch_normalize",
+      "output": "dest_splunk_hec"
+    },
+    {
+      "filter": "source == 'k8s' OR sourcetype == 'kube:container'",
+      "pipeline": "pipe_k8s_enrich_redact",
+      "output": "dest_splunk_hec"
+    },
+    {
+      "filter": "source == 'alb' OR sourcetype == 'aws:alb'",
+      "pipeline": "pipe_alb_parse",
+      "output": "dest_s3_archive"
+    }
+  ],
+  "defaultOutput": "dest_splunk_hec"
+}

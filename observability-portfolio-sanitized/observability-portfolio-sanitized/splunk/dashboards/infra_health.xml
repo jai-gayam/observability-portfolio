@@ -1,0 +1,87 @@
+<form version="1.1">
+  <label>Infrastructure Health - Sanitized</label>
+  <description>Infra KPIs and trends (CPU, memory, disk, latency) using synthetic field names.</description>
+
+  <fieldset submitButton="false">
+    <input type="dropdown" token="env">
+      <label>Environment</label>
+      <choice value="*">All</choice>
+      <choice value="prod">prod</choice>
+      <choice value="stage">stage</choice>
+      <choice value="dev">dev</choice>
+      <default>*</default>
+    </input>
+    <input type="time" token="time_range">
+      <label>Time</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <row>
+    <panel>
+      <title>Service Availability (%)</title>
+      <single>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=&lt;SOURCETYPE&gt; env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| eval ok=if(status="ok",1,0)
+| stats round(100*avg(ok),2) as availability</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="numberPrecision">2</option>
+      </single>
+    </panel>
+
+    <panel>
+      <title>P95 Latency (ms)</title>
+      <single>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=&lt;SOURCETYPE&gt; env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| stats perc95(latency_ms) as p95_latency</query>
+        </search>
+        <option name="numberPrecision">0</option>
+      </single>
+    </panel>
+
+    <panel>
+      <title>Error Rate (%)</title>
+      <single>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=&lt;SOURCETYPE&gt; env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| eval is_error=if(status="error",1,0)
+| stats round(100*avg(is_error),2) as error_rate</query>
+        </search>
+        <option name="numberPrecision">2</option>
+      </single>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Latency Over Time (P50/P95)</title>
+      <chart>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=&lt;SOURCETYPE&gt; env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| timechart span=5m perc50(latency_ms) as p50 perc95(latency_ms) as p95</query>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top Noisiest Hosts (Errors)</title>
+      <table>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=&lt;SOURCETYPE&gt; env=$env$ status="error" earliest=$time_range.earliest$ latest=$time_range.latest$
+| stats count as errors by host
+| sort - errors
+| head 10</query>
+        </search>
+      </table>
+    </panel>
+  </row>
+</form>

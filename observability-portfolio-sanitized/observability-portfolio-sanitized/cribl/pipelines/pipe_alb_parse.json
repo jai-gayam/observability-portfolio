@@ -1,0 +1,65 @@
+{
+  "id": "pipe_alb_parse",
+  "name": "ALB Parse + Minimal Fields (Sanitized)",
+  "description": "Parse ALB logs into fields; keep minimal fields for cost control; archive full logs to S3.",
+  "functions": [
+    {
+      "id": "grok_alb",
+      "type": "grok",
+      "description": "Parse ALB log line (simplified)",
+      "conf": {
+        "srcField": "message",
+        "patterns": [
+          "%{WORD:alb.type} %{TIMESTAMP_ISO8601:alb.time} %{DATA:alb.elb} %{IPORHOST:client.ip}:%{NUMBER:client.port} %{IPORHOST:target.ip}:%{NUMBER:target.port} %{NUMBER:request.processing_time} %{NUMBER:target.processing_time} %{NUMBER:response.processing_time} %{NUMBER:elb.status_code} %{NUMBER:target.status_code} %{NUMBER:received_bytes} %{NUMBER:sent_bytes} \"%{WORD:http.method} %{DATA:http.url} HTTP/%{NUMBER:http.version}\" \"%{DATA:http.user_agent}\""
+        ]
+      }
+    },
+    {
+      "id": "eval_min_fields",
+      "type": "eval",
+      "description": "Promote key fields and compute latency_ms",
+      "conf": {
+        "add": [
+          {
+            "name": "source",
+            "value": "'alb'"
+          },
+          {
+            "name": "platform",
+            "value": "'aws'"
+          },
+          {
+            "name": "latency_ms",
+            "value": "round(1000*(request.processing_time+target.processing_time+response.processing_time),0)"
+          },
+          {
+            "name": "status",
+            "value": "if(elb.status_code>=500,'error','ok')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "keep_fields",
+      "type": "keep",
+      "description": "Keep only the fields used downstream (cost control)",
+      "conf": {
+        "fields": [
+          "_time",
+          "source",
+          "platform",
+          "env",
+          "service",
+          "client.ip",
+          "http.method",
+          "http.url",
+          "elb.status_code",
+          "target.status_code",
+          "latency_ms",
+          "received_bytes",
+          "sent_bytes"
+        ]
+      }
+    }
+  ]
+}

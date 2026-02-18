@@ -1,0 +1,83 @@
+{
+  "id": "pipe_k8s_enrich_redact",
+  "name": "K8s Enrich + Redact (Sanitized)",
+  "description": "Enrich with k8s metadata and redact secrets/tokens.",
+  "functions": [
+    {
+      "id": "parse_json_if_needed",
+      "type": "json_extract",
+      "description": "Extract JSON payload if message is JSON",
+      "conf": {
+        "srcField": "message",
+        "dstField": "payload",
+        "mode": "auto",
+        "overwrite": true
+      }
+    },
+    {
+      "id": "eval_k8s_fields",
+      "type": "eval",
+      "description": "Normalize k8s fields",
+      "conf": {
+        "add": [
+          {
+            "name": "platform",
+            "value": "'kubernetes'"
+          },
+          {
+            "name": "source",
+            "value": "'k8s'"
+          },
+          {
+            "name": "cluster",
+            "value": "coalesce(k8s.cluster, cluster, 'cluster-01')"
+          },
+          {
+            "name": "namespace",
+            "value": "coalesce(k8s.namespace, namespace, 'default')"
+          },
+          {
+            "name": "pod",
+            "value": "coalesce(k8s.pod, pod, 'unknown')"
+          },
+          {
+            "name": "container",
+            "value": "coalesce(k8s.container, container, 'unknown')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mask_tokens",
+      "type": "mask",
+      "description": "Redact common secret patterns",
+      "conf": {
+        "fields": [
+          "message",
+          "payload",
+          "headers.authorization"
+        ],
+        "patterns": [
+          {
+            "name": "bearer",
+            "regex": "Bearer\\s+[A-Za-z0-9\\-\\._~\\+\\/]+=*",
+            "replace": "Bearer ***REDACTED***"
+          },
+          {
+            "name": "api_key",
+            "regex": "(api[_-]?key\\s*[=:]\\s*)([A-Za-z0-9\\-]{16,})",
+            "replace": "\\1***REDACTED***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "add_event_id",
+      "type": "uuid",
+      "description": "Add event_id for traceability across pipelines",
+      "conf": {
+        "field": "event_id"
+      }
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<form version="1.1">
+  <label>Security &amp; Access Signals - Sanitized</label>
+  <description>Authentication trends, MFA adoption, and suspicious bursts (synthetic fields).</description>
+
+  <fieldset submitButton="false">
+    <input type="dropdown" token="env">
+      <label>Environment</label>
+      <choice value="*">All</choice>
+      <choice value="prod">prod</choice>
+      <choice value="stage">stage</choice>
+      <choice value="dev">dev</choice>
+      <default>prod</default>
+    </input>
+    <input type="time" token="time_range">
+      <label>Time</label>
+      <default>
+        <earliest>-7d@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <row>
+    <panel>
+      <title>Login Outcomes Over Time</title>
+      <chart>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=auth env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| timechart span=1h count by outcome</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>MFA Usage (%)</title>
+      <single>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=auth env=$env$ earliest=$time_range.earliest$ latest=$time_range.latest$
+| eval used_mfa=if(mfa="true",1,0)
+| stats round(100*avg(used_mfa),2) as mfa_pct</query>
+        </search>
+        <option name="numberPrecision">2</option>
+      </single>
+    </panel>
+
+    <panel>
+      <title>Top Users with Failed Logins</title>
+      <table>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=auth env=$env$ outcome="fail" earliest=$time_range.earliest$ latest=$time_range.latest$
+| stats count as fails by user
+| sort - fails
+| head 15</query>
+        </search>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Potential Password Spray (burst detection)</title>
+      <table>
+        <search>
+          <query>index=&lt;INDEX&gt; sourcetype=auth env=$env$ outcome="fail" earliest=$time_range.earliest$ latest=$time_range.latest$
+| bin _time span=5m
+| stats dc(user) as distinct_users count as fail_events by _time src_ip
+| where distinct_users &gt;= 15 AND fail_events &gt;= 50
+| sort - fail_events</query>
+        </search>
+      </table>
+    </panel>
+  </row>
+</form>

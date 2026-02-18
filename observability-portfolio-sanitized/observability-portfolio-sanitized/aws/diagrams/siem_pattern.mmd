@@ -1,0 +1,12 @@
+%% SIEM-ish signal flow (sanitized)
+sequenceDiagram
+  participant App as App/IDP
+  participant Cribl as Cribl Stream
+  participant Splunk as Splunk (Index)
+  participant SOAR as SOAR/Ticketing
+
+  App->>Cribl: auth logs (success/fail)
+  Cribl->>Cribl: redact tokens + normalize fields
+  Cribl->>Splunk: send via HEC (index=<INDEX>)
+  Splunk->>Splunk: correlation searches + notable events
+  Splunk->>SOAR: webhook / incident creation

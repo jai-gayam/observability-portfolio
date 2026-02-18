@@ -1,0 +1,33 @@
+%% Observability ingest (sanitized) - Mermaid diagram
+flowchart LR
+  subgraph AWS["AWS Account <AWS_ACCOUNT_ID>"]
+    CW[CloudWatch Logs]
+    ALB[Application Load Balancer Logs]
+    EKS[EKS / Kubernetes]
+    S3[(S3 Archive Bucket<br/><S3_BUCKET>)]
+  end
+
+  subgraph Cribl["Cribl Stream"]
+    IN[Sources]
+    RT[Routes]
+    P1[Pipeline: CloudWatch Normalize]
+    P2[Pipeline: K8s Enrich + Redact]
+    P3[Pipeline: ALB Parse]
+  end
+
+  subgraph Splunk["Splunk"]
+    HEC[HEC / HTTP Event Collector]
+    IDX[Indexers]
+    SH[Search Head / Dashboards]
+  end
+
+  CW --> IN
+  EKS --> IN
+  ALB --> IN
+
+  IN --> RT
+  RT --> P1 --> HEC
+  RT --> P2 --> HEC
+  RT --> P3 --> S3
+
+  HEC --> IDX --> SH

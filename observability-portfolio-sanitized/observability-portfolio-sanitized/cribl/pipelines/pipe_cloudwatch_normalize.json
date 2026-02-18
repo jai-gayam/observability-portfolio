@@ -1,0 +1,59 @@
+{
+  "id": "pipe_cloudwatch_normalize",
+  "name": "CloudWatch Normalize (Sanitized)",
+  "description": "Normalize CloudWatch log events: standard fields, time, and minimal PII redaction.",
+  "functions": [
+    {
+      "id": "eval_add_fields",
+      "type": "eval",
+      "description": "Standardize fields",
+      "conf": {
+        "add": [
+          {
+            "name": "platform",
+            "value": "'aws'"
+          },
+          {
+            "name": "source",
+            "value": "'cloudwatch'"
+          },
+          {
+            "name": "env",
+            "value": "coalesce(env, 'prod')"
+          },
+          {
+            "name": "service",
+            "value": "coalesce(service, 'unknown')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mask_email",
+      "type": "mask",
+      "description": "Mask emails if present",
+      "conf": {
+        "fields": [
+          "message",
+          "user",
+          "email"
+        ],
+        "patterns": [
+          {
+            "name": "email",
+            "regex": "([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})",
+            "replace": "***@***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "drop_noise",
+      "type": "drop",
+      "description": "Drop known noisy health checks (synthetic)",
+      "conf": {
+        "filter": "match(message, /healthcheck_ok|readiness_probe/)"
+      }
+    }
+  ]
+}
