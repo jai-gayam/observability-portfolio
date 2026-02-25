@@ -11,12 +11,15 @@
     :root {
       --bg: #0a0e14;
       --surface: #111820;
-      --border: #1e2d3d;
-      --accent: #00d4ff;
-      --accent2: #ff6b35;
+      --border: #1a2e3d;
+      --accent: #00b4d8;
+      --accent2: #0096c7;
+      --accent3: #48cae4;
       --text: #cdd9e5;
-      --muted: #546e7a;
-      --green: #3ddc84;
+      --muted: #4a7c8a;
+      --green: #2dc653;
+      --green-light: #56e87a;
+      --teal: #00d4ff;
       --font-mono: 'IBM Plex Mono', monospace;
       --font-display: 'Syne', sans-serif;
     }
@@ -38,8 +41,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(0,180,216,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,216,0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -49,7 +52,7 @@
     header {
       position: relative;
       z-index: 10;
-      padding: 80px 5% 60px;
+      padding: 60px 5% 50px;
       border-bottom: 1px solid var(--border);
       display: grid;
       grid-template-columns: 1fr auto;
@@ -86,7 +89,79 @@
       margin-top: 16px;
       color: var(--muted);
       font-size: 13px;
-      max-width: 480px;
+      max-width: 520px;
+    }
+
+    /* ── CONTACT INFO ROW ── */
+    .contact-info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .contact-info-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .contact-info-item a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-info-item a:hover { color: var(--accent); }
+
+    .contact-info-item .ci-icon {
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    /* Certification badges */
+    .cert-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      font-family: var(--font-mono);
+      border-radius: 2px;
+      font-weight: 600;
+    }
+
+    .cert-badge.aws {
+      background: rgba(0,150,199,0.15);
+      border: 1px solid rgba(0,150,199,0.45);
+      color: #48cae4;
+    }
+
+    .cert-badge.cribl {
+      background: rgba(45,198,83,0.12);
+      border: 1px solid rgba(45,198,83,0.4);
+      color: var(--green-light);
+    }
+
+    .cert-badge.splunk {
+      background: rgba(0,180,216,0.12);
+      border: 1px solid rgba(0,180,216,0.35);
+      color: var(--teal);
+    }
+
+    .cert-badge::before {
+      content: '✦';
+      font-size: 9px;
     }
 
     .header-links {
@@ -131,7 +206,7 @@
       border-color: var(--border);
       color: var(--muted);
     }
-    .btn.secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn.secondary:hover { border-color: var(--green); color: var(--green); }
     .btn.secondary::before { background: transparent; }
 
     /* ── NAV ── */
@@ -237,8 +312,26 @@
       flex-shrink: 0;
     }
 
-    .stack-dot.orange { background: var(--accent2); }
+    .stack-dot.teal { background: var(--teal); }
     .stack-dot.blue { background: var(--accent); }
+
+    /* ── NEW BADGE ── */
+    .new-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      background: rgba(45,198,83,0.2);
+      border: 1px solid rgba(45,198,83,0.55);
+      color: var(--green-light);
+      border-radius: 2px;
+      margin-left: 6px;
+      vertical-align: middle;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+    }
 
     /* ── PROJECTS ── */
     .projects-grid {
@@ -304,9 +397,10 @@
       letter-spacing: 0.05em;
     }
 
-    .tag-pill.accent { border-color: rgba(0,212,255,0.3); color: var(--accent); }
-    .tag-pill.orange { border-color: rgba(255,107,53,0.3); color: var(--accent2); }
-    .tag-pill.green { border-color: rgba(61,220,132,0.3); color: var(--green); }
+    .tag-pill.accent { border-color: rgba(0,180,216,0.3); color: var(--accent); }
+    .tag-pill.teal { border-color: rgba(0,212,255,0.35); color: var(--teal); }
+    .tag-pill.green { border-color: rgba(45,198,83,0.3); color: var(--green-light); }
+    .tag-pill.blue2 { border-color: rgba(72,202,228,0.3); color: var(--accent3); }
 
     /* ── CASE STUDIES ── */
     .case-study {
@@ -355,12 +449,24 @@
 
     .metric-val {
       font-family: var(--font-display);
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--accent);
     }
 
     .metric-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+
+    /* Chewy project card highlight */
+    .case-study.chewy {
+      border-left: 3px solid var(--accent);
+    }
+
+    .cs-tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
 
     /* ── SKILLS ── */
     .skills-grid {
@@ -379,7 +485,7 @@
       font-size: 10px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--accent2);
+      color: var(--accent3);
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
@@ -429,6 +535,34 @@
 
     .contact-links { display: flex; gap: 12px; flex-wrap: wrap; }
 
+    /* Contact detail links in contact section */
+    .contact-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      margin-top: 12px;
+    }
+
+    .contact-detail-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-detail-link:hover { color: var(--accent); }
+
+    .contact-detail-link .cd-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-right: 2px;
+    }
+
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -469,6 +603,7 @@
       .case-study { grid-template-columns: 1fr; }
       .cs-number { display: none; }
       .contact-bar { flex-direction: column; }
+      .cert-badges { gap: 6px; }
     }
   </style>
 </head>
@@ -479,7 +614,26 @@
     <div>
       <div class="tag">SRE · Observability · Cloud</div>
       <h1>Jai Gayam<span>Observability<br>Portfolio</span></h1>
-      <p class="subtitle">End-to-end observability across Data, Infrastructure &amp; Cloud — Splunk · Cribl · AWS · Terraform . KNIME . Snowflake<span class="blink">█</span></p>
+      <p class="subtitle">End-to-end observability across Data, Infrastructure &amp; Cloud — Splunk · Cribl · AWS · Terraform · KNIME · Snowflake<span class="blink">█</span></p>
+
+      <!-- Contact Info Row -->
+      <div class="contact-info-row">
+        <div class="contact-info-item">
+          <span class="ci-icon">📞</span>
+          <a href="tel:3617205873">361.720.5873</a>
+        </div>
+        <div class="contact-info-item">
+          <span class="ci-icon">✉</span>
+          <a href="mailto:jainandanreddy@gmail.com">jainandanreddy@gmail.com</a>
+        </div>
+      </div>
+
+      <!-- Certification Badges -->
+      <div class="cert-badges">
+        <span class="cert-badge aws">AWS Certified Solutions Architect</span>
+        <span class="cert-badge cribl">Cribl Certified</span>
+        <span class="cert-badge splunk">Splunk Certified Admin</span>
+      </div>
     </div>
     <div class="header-links">
       <a href="https://github.com/jai-gayam/observability-portfolio" target="_blank" class="btn">
@@ -509,19 +663,23 @@
       <div class="about-grid">
         <div class="about-text fade-up">
           <p>Site Reliability Engineer specializing in end-to-end observability pipelines that span data ingestion, infrastructure monitoring, and cloud-native architectures.</p>
-          <p>This portfolio showcases sanitized, production-grade implementations demonstrating real-world patterns — from Splunk dashboards and Cribl Stream pipelines to Terraform-managed AWS infrastructure.</p>
+          <p>This portfolio showcases sanitized, production-grade implementations demonstrating real-world patterns — from Splunk dashboards and Cribl Stream pipelines to Terraform-managed AWS infrastructure and KNIME-driven data workflows with Snowflake integration.</p>
           <p>All artifacts are fully reusable with your organization's values substituted in place of generalized placeholders.</p>
         </div>
         <div>
           <div class="stack-grid">
             <div class="stack-item fade-up"><span class="stack-dot blue"></span>Splunk</div>
-            <div class="stack-item fade-up"><span class="stack-dot orange"></span>Cribl Stream</div>
+            <div class="stack-item fade-up"><span class="stack-dot teal"></span>Cribl Stream <span class="new-badge">NEW</span></div>
             <div class="stack-item fade-up"><span class="stack-dot blue"></span>AWS</div>
             <div class="stack-item fade-up"><span class="stack-dot"></span>Terraform</div>
             <div class="stack-item fade-up"><span class="stack-dot blue"></span>Mermaid Diagrams</div>
-            <div class="stack-item fade-up"><span class="stack-dot orange"></span>HCL</div>
+            <div class="stack-item fade-up"><span class="stack-dot teal"></span>Cribl Edge <span class="new-badge">NEW</span></div>
             <div class="stack-item fade-up"><span class="stack-dot"></span>SPL</div>
             <div class="stack-item fade-up"><span class="stack-dot blue"></span>SRE Practices</div>
+            <div class="stack-item fade-up"><span class="stack-dot"></span>KNIME Server <span class="new-badge">NEW</span></div>
+            <div class="stack-item fade-up"><span class="stack-dot"></span>KNIME Workflows <span class="new-badge">NEW</span></div>
+            <div class="stack-item fade-up"><span class="stack-dot teal"></span>Snowflake <span class="new-badge">NEW</span></div>
+            <div class="stack-item fade-up"><span class="stack-dot"></span>HCL</div>
           </div>
         </div>
       </div>
@@ -548,7 +706,7 @@
           <div class="project-title">Stream Pipelines & Routes</div>
           <div class="project-desc">Production-pattern Cribl Stream routes and processing pipelines in JSON. Includes pack skeletons with documentation.</div>
           <div class="tags">
-            <span class="tag-pill orange">Cribl</span>
+            <span class="tag-pill teal">Cribl Stream <span class="new-badge">NEW</span></span>
             <span class="tag-pill">JSON</span>
             <span class="tag-pill">Routing</span>
           </div>
@@ -575,6 +733,23 @@
             <span class="tag-pill">IaC</span>
           </div>
         </div>
+
+        <!-- CHEWY PROJECT CARD -->
+        <div class="project-card fade-up" style="border-top: 2px solid var(--accent); grid-column: 1 / -1;">
+          <div class="project-number">05 / Chewy · Enterprise Project</div>
+          <div class="project-title">Chewy — Full-Stack Observability & Data Platform</div>
+          <div class="project-desc">End-to-end observability and data engineering implementation at Chewy, spanning log routing with Cribl Stream &amp; Edge, analytics pipelines with KNIME Server and Workflows, cloud data warehousing via Snowflake, and infrastructure monitoring through Splunk. Demonstrates integration of modern data tools with enterprise-scale SRE practices.</div>
+          <div class="tags">
+            <span class="tag-pill teal">Cribl Stream <span class="new-badge">NEW</span></span>
+            <span class="tag-pill teal">Cribl Edge <span class="new-badge">NEW</span></span>
+            <span class="tag-pill green">KNIME Server <span class="new-badge">NEW</span></span>
+            <span class="tag-pill green">KNIME Workflows <span class="new-badge">NEW</span></span>
+            <span class="tag-pill blue2">Snowflake <span class="new-badge">NEW</span></span>
+            <span class="tag-pill accent">Splunk</span>
+            <span class="tag-pill">AWS</span>
+            <span class="tag-pill">Terraform</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -583,8 +758,30 @@
       <div class="section-label">03</div>
       <h2>Case Studies</h2>
 
-      <div class="case-study fade-up">
+      <div class="case-study chewy fade-up">
         <div class="cs-number">01</div>
+        <div>
+          <div class="cs-title">Chewy — Enterprise Observability & Data Engineering</div>
+          <div class="cs-desc">Production implementation covering Cribl Stream &amp; Edge for log routing and reduction, KNIME Server &amp; Workflows for automated data pipelines, and Snowflake as the central cloud data warehouse. Integrated with Splunk for search and alerting and AWS for infrastructure. Demonstrates cross-platform observability at scale.</div>
+          <div class="cs-tech-tags">
+            <span class="tag-pill teal">Cribl Stream <span class="new-badge">NEW</span></span>
+            <span class="tag-pill teal">Cribl Edge <span class="new-badge">NEW</span></span>
+            <span class="tag-pill green">KNIME Server <span class="new-badge">NEW</span></span>
+            <span class="tag-pill green">KNIME Workflows <span class="new-badge">NEW</span></span>
+            <span class="tag-pill blue2">Snowflake <span class="new-badge">NEW</span></span>
+            <span class="tag-pill accent">Splunk</span>
+          </div>
+          <div class="cs-metrics">
+            <div class="metric"><span class="metric-val">Cribl</span><span class="metric-label">Stream &amp; Edge Routing</span></div>
+            <div class="metric"><span class="metric-val">KNIME</span><span class="metric-label">Workflow Automation</span></div>
+            <div class="metric"><span class="metric-val">Snowflake</span><span class="metric-label">Cloud Data Warehouse</span></div>
+            <div class="metric"><span class="metric-val">Splunk</span><span class="metric-label">Search &amp; Alerting</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-study fade-up">
+        <div class="cs-number">02</div>
         <div>
           <div class="cs-title">End-to-End Observability Pipeline — Data Layer</div>
           <div class="cs-desc">Full implementation walkthrough of a data observability pipeline integrating Splunk, Cribl Stream, and AWS S3/Kinesis. Covers ingestion, enrichment, routing, and alerting patterns.</div>
@@ -597,7 +794,7 @@
       </div>
 
       <div class="case-study fade-up">
-        <div class="cs-number">02</div>
+        <div class="cs-number">03</div>
         <div>
           <div class="cs-title">Infrastructure Observability — Cloud-Native SRE</div>
           <div class="cs-desc">End-to-end SRE observability for cloud infrastructure. Terraform-managed AWS environment with full monitoring coverage, incident response playbooks, and Splunk alerting dashboards.</div>
@@ -625,7 +822,8 @@
           <div class="skill-group-title">Observability</div>
           <ul class="skill-list">
             <li>Splunk SPL & Dashboards</li>
-            <li>Cribl Stream / Edge</li>
+            <li>Cribl Stream <span class="new-badge">NEW</span></li>
+            <li>Cribl Edge <span class="new-badge">NEW</span></li>
             <li>Log Management</li>
             <li>Alerting & Incident Response</li>
           </ul>
@@ -651,10 +849,12 @@
         <div class="skill-group fade-up">
           <div class="skill-group-title">Data Engineering</div>
           <ul class="skill-list">
+            <li>KNIME Server <span class="new-badge">NEW</span></li>
+            <li>KNIME Workflows <span class="new-badge">NEW</span></li>
+            <li>Snowflake <span class="new-badge">NEW</span></li>
             <li>Pipeline Design</li>
             <li>Data Routing & Enrichment</li>
             <li>Schema Normalization</li>
-            <li>Synthetic Data Patterns</li>
           </ul>
         </div>
       </div>
@@ -668,6 +868,19 @@
         <div class="contact-text">
           <h3>Let's Connect</h3>
           <p>Open to SRE, Observability, and Platform Engineering roles.</p>
+          <div class="contact-details">
+            <a href="tel:3617205873" class="contact-detail-link">
+              <span class="cd-label">Phone</span> 361.720.5873
+            </a>
+            <a href="mailto:jainandanreddy@gmail.com" class="contact-detail-link">
+              <span class="cd-label">Email</span> jainandanreddy@gmail.com
+            </a>
+          </div>
+          <div class="cert-badges" style="margin-top: 14px;">
+            <span class="cert-badge aws">AWS Certified Solutions Architect</span>
+            <span class="cert-badge cribl">Cribl Certified</span>
+            <span class="cert-badge splunk">Splunk Certified Admin</span>
+          </div>
         </div>
         <div class="contact-links">
           <a href="https://github.com/jai-gayam" target="_blank" class="btn">
@@ -683,7 +896,7 @@
   </main>
 
   <footer>
-    <p>// jai-gayam.github.io/observability-portfolio &nbsp;·&nbsp; Built for GitHub Pages</p>
+    <p>// Jainandan Gayam &nbsp;·&nbsp; jainandanreddy@gmail.com &nbsp;·&nbsp; 361.720.5873 &nbsp;·&nbsp; jai-gayam.github.io/observability-portfolio</p>
   </footer>
 
 </body>
